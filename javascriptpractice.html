@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Activities Main Menu</title>
+</head>
+<body>
+    <h1>JavaScript Activities Main Menu</h1>
+    <h2>Main Menu</h2>
+
+    <nav id="nav_menu">
+        <button onclick="changeView('act1')">1. Set and Array</button>
+        <button onclick="changeView('act2')">2. While Loop Array</button>
+        <button onclick="changeView('act3')">3. Student Enrollment</button>
+        <button onclick="changeView('act4')">4. JavaScript Quiz</button>
+        <button onclick="changeView('act5')">5. School Search</button>
+        <button onclick="changeView('act6')">6. Student Grade Checker</button>
+        <button onclick="changeView('act7')">7. JavaScript Countdown Timer</button>
+        <button onclick="changeView('home')">Home</button>
+    </nav>
+
+    <hr>
+
+    <section id="act1" hidden>
+        <h2>Set and Array Activity</h2>
+        
+        <h3>Set</h3>
+        <p>
+            <input id="txtSetItem" type="text" placeholder="Enter an item">
+            <button onclick="add_set()">Add to Set</button>
+            <button onclick="remove_from_set()">Remove</button>
+            <button onclick="clearAllSet()">Clear Set</button>
+        </p>
+        <p>Items in Set:</p>
+        <p id="dispSet">No items.</p>
+        <p id="dispSetSize">Set size: 0</p>
+
+        <hr>
+
+        <h3>Array</h3>
+        <p>
+            <input id="txtArrItem" type="text" placeholder="Enter an item">
+            <button onclick="insertArr()">Add to Array</button>
+            <button onclick="delArrItem()">Remove</button>
+            <button onclick="wipeArr()">Clear Array</button>
+        </p>
+        <p>Items in Array:</p>
+        <p id="dispArr">No items.</p>
+        <p id="dispArrLen">Array length: 0</p>
+    </section>
+
+    <section id="act2" hidden>
+        <h2>While Loop Array Activity</h2>
+        <p>
+            <input id="inputLoopItem" type="text" placeholder="Enter an item">
+            <button onclick="pushLoopItem()">Add Item</button>
+            <button onclick="stopLoopActivity()">Stop</button>
+            <button onclick="resetLoopActivity()">Restart</button>
+        </p>
+        <p id="statusMsg">Activity is running.</p>
+        <p id="loopItemsList">Items: (none)</p>
+        <p id="loopItemCounter">Total items: 0</p>
+    </section>
+
+    <section id="act3" hidden>
+        <h2>Student Enrollment System</h2>
+        <label for="stNameInput">Student name:</label>
+        <input id="stNameInput" type="text">
+        <label for="dropdownSubject">Subject:</label>
+        <select id="dropdownSubject">
+            <option value="JavaScript">JavaScript</option>
+            <option value="HTML">HTML</option>
+            <option value="Database">Database</option>
+        </select>
+        <p>
+            <button onclick="saveStudent()">Enroll Student</button>
+            <button onclick="showEnrolled()">Show Students</button>
+            <button onclick="delEnrollments()">Clear Selected Subject</button>
+        </p>
+        <p id="msgEnroll"></p>
+        <p id="outputStudentList">Enrolled students will appear here.</p>
+    </section>
+
+    <section id="act4" hidden>
+        <h2>JavaScript Quiz Game</h2>
+        <p id="qCounter">Question 1 of 5</p>
+        <h3 id="qHeader"></h3>
+        <p id="answerButtonsBox"></p>
+        <p id="feedbackText"></p>
+        <p id="scoreBoard">Score: 0</p>
+        <button id="btnNextQ" onclick="gotoNextQuestion()" disabled>Next Question</button>
+        <button onclick="restartQuizGame()">Restart Quiz</button>
+    </section>
+
+    <section id="act5" hidden>
+        <h2>School Search Program</h2>
+        <label for="schoolInput">Enter a school name:</label>
+        <input id="schoolInput" type="text">
+        <button onclick="searchFunction()">Search</button>
+        <p id="result"></p>
+    </section>
+
+    <section id="act6" hidden>
+        <h2>Student Grade Checker</h2>
+        <label for="gradeInputBox">Enter a grade (0 to 100):</label>
+        <input id="gradeInputBox" type="number" min="0" max="100">
+        <button onclick="chkGrade()">Check</button>
+        <p id="gradeFeedback"></p>
+    </section>
+
+    <section id="act7" hidden>
+        <h2>Countdown Timer</h2>
+        <p>Remaining time: <span id="countdown">60</span> seconds</p>
+        <p id="timeMsg"></p>
+        <label for="changeNum">Enter custom time:</label>
+        <input type="number" id="changeNum" value="60">
+        <button onclick="enterNum()">Enter Number</button> 
+        <p>
+            <button onclick="startTimer()">Start</button>
+            <button onclick="pauseTimer()">Pause</button>
+            <button onclick="resumeTimer()">Resume</button>
+            <button onclick="resetBtn()">Reset Button</button>
+        </p>
+    </section>
+
+    <script>
+        function changeView(whichAct) {
+            var actList = ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'act7'];
+            for (let i = 0; i < actList.length; i++) {
+                document.getElementById(actList[i]).hidden = true;
+            }
+
+            if (whichAct !== 'home') {
+                document.getElementById(whichAct).hidden = false;
+            }
+        }
+
+        const mySet = new Set();
+        var myArr = [];
+
+        function add_set() {
+            var itemInput = document.getElementById("txtSetItem").value;
+            let val = itemInput.trim();
+
+            if (val == "") {
+                return;
+            }
+
+            mySet.add(val);
+            document.getElementById("txtSetItem").value = "";
+            renderSet();
+        }
+
+        function remove_from_set() {
+            let item = document.getElementById("txtSetItem").value.trim();
+
+            if (item.length == 0) {
+                return;
+            }
+
+            mySet.delete(item);
+            document.getElementById("txtSetItem").value = "";
+            renderSet();
+        }
+
+        function clearAllSet() {
+            mySet.clear();
+            renderSet();
+        }
+
+        function renderSet() {
+            let setElements = Array.from(mySet);
+            document.getElementById("dispSet").textContent = setElements.length > 0 ? setElements.join(", ") : "No items.";
+            document.getElementById("dispSetSize").textContent = "Set size: " + mySet.size;
+        }
+
+        function insertArr() {
+            var val = document.getElementById("txtArrItem").value.trim();
+
+            if (val === "") {
+                return;
+            }
+
+            myArr.push(val);
+            document.getElementById("txtArrItem").value = "";
+            renderArr();
+        }
+
+        function delArrItem() {
+            let item = document.getElementById("txtArrItem").value.trim();
+
+            if (item == "") {
+                return;
+            }
+
+            var pos = myArr.indexOf(item);
+            if (pos > -1) {
+                myArr.splice(pos, 1);
+            }
+
+            document.getElementById("txtArrItem").value = "";
+            renderArr();
+        }
+
+        function wipeArr() {
+            myArr = [];
+            renderArr();
+        }
+
+        function renderArr() {
+            document.getElementById("dispArr").textContent = myArr.length > 0 ? myArr.join(", ") : "No items.";
+            document.getElementById("dispArrLen").textContent = "Array length: " + myArr.length;
+        }
+
+        var loopArr = [];
+        let canAddWhile = true;
+
+        function pushLoopItem() {
+            var item = document.getElementById("inputLoopItem").value.trim();
+
+            if (canAddWhile == false) {
+                document.getElementById("statusMsg").textContent = "Activity is stopped. Press Restart to add items again.";
+                return;
+            }
+
+            if (item === "") {
+                return;
+            }
+
+            loopArr.push(item);
+            document.getElementById("inputLoopItem").value = "";
+            showWhileItems();
+        }
+
+        function showWhileItems() {
+            var fullText = "";
+            let idx = 0;
+
+            while (idx < loopArr.length) {
+                if (idx != 0) {
+                    fullText = fullText + ", ";
+                }
+                fullText = fullText + loopArr[idx];
+                idx++;
+            }
+
+            if (fullText == "") {
+                fullText = "(none)";
+            }
+
+            document.getElementById("loopItemsList").textContent = "Items: " + fullText;
+            document.getElementById("loopItemCounter").textContent = "Total items: " + loopArr.length;
+        }
+
+        function stopLoopActivity() {
+            canAddWhile = false;
+            document.getElementById("statusMsg").textContent = "Activity stopped. Press Restart to continue.";
+        }
+
+        function resetLoopActivity() {
+            loopArr = [];
+            canAddWhile = true;
+            document.getElementById("inputLoopItem").value = "";
+            document.getElementById("statusMsg").textContent = "Activity is running.";
+            showWhileItems();
+        }
+
+        var enrolledList = [];
+
+        function saveStudent() {
+            let sName = document.getElementById("stNameInput").value.trim();
+            var chosenSubj = document.getElementById("dropdownSubject").value;
+
+            if (sName == "") {
+                document.getElementById("msgEnroll").textContent = "Please enter the student's name.";
+                return;
+            }
+
+            let index = 0;
+            while (index < enrolledList.length) {
+                if (enrolledList[index].name.toLowerCase() == sName.toLowerCase() && enrolledList[index].subject == chosenSubj) {
+                    document.getElementById("msgEnroll").textContent = "This student is already enrolled in " + chosenSubj + ".";
+                    return;
+                }
+                index++;
+            }
+
+            enrolledList.push({ name: sName, subject: chosenSubj });
+            document.getElementById("stNameInput").value = "";
+            document.getElementById("msgEnroll").textContent = "Student enrolled successfully in " + chosenSubj + ".";
+            showEnrolled();
+        }
+
+        function showEnrolled() {
+            const currentSubj = document.getElementById("dropdownSubject").value;
+            var listOutput = "";
+            let i = 0;
+            var foundCount = 0;
+
+            while (i < enrolledList.length) {
+                if (enrolledList[i].subject == currentSubj) {
+                    listOutput = listOutput + enrolledList[i].name + "\n";
+                    foundCount++;
+                }
+                i++;
+            }
+
+            if (foundCount == 0) {
+                listOutput = "No students enrolled in " + currentSubj + ".";
+            }
+
+            document.getElementById("outputStudentList").textContent = "Students in " + currentSubj + ":\n" + listOutput;
+        }
+
+        function delEnrollments() {
+            let selectedSubj = document.getElementById("dropdownSubject").value;
+            var filtered = [];
+            let i = 0;
+
+            while (i < enrolledList.length) {
+                if (enrolledList[i].subject !== selectedSubj) {
+                    filtered.push(enrolledList[i]);
+                }
+                i++;
+            }
+
+            enrolledList = filtered;
+            document.getElementById("msgEnroll").textContent = "Enrollment list cleared for " + selectedSubj + ".";
+            showEnrolled();
+        }
+
+        const quizQList = [
+            {
+                q: "1. Which keyword declares a variable?",
+                choices: ["var", "style", "page"],
+                ans: "var"
+            },
+            {
+                q: "2. Which symbol is used for a single-line comment?",
+                choices: ["<!-- -->", "//", "**"],
+                ans: "//"
+            },
+            {
+                q: "3. Which command displays a message in the console?",
+                choices: ["console.log()", "print.page()", "show.text()"],
+                ans: "console.log()"
+            },
+            {
+                q: "4. Which data type represents true or false?",
+                choices: ["String", "Boolean", "Number"],
+                ans: "Boolean"
+            },
+            {
+                q: "5. Which method adds an item to the end of an array?",
+                choices: ["push()", "pop()", "clear()"],
+                ans: "push()"
+            }
+        ];
+
+        let qIndex = 0;
+        var userScore = 0;
+        var hasAnswered = false;
+
+        function loadQuestion() {
+            hasAnswered = false;
+            document.getElementById("qCounter").textContent = "Question " + (qIndex + 1) + " of " + quizQList.length;
+            document.getElementById("qHeader").textContent = quizQList[qIndex].q;
+            document.getElementById("feedbackText").textContent = "";
+            document.getElementById("scoreBoard").textContent = "Score: " + userScore;
+            document.getElementById("btnNextQ").disabled = true;
+
+            var container = document.getElementById("answerButtonsBox");
+            container.innerHTML = "";
+
+            for (let i = 0; i < quizQList[qIndex].choices.length; i++) {
+                let btn = document.createElement("button");
+                btn.textContent = quizQList[qIndex].choices[i];
+                btn.onclick = function () {
+                    onAnswerSelected(this.textContent);
+                };
+                container.appendChild(btn);
+                container.appendChild(document.createTextNode(" "));
+            }
+        }
+
+        function onAnswerSelected(selectedChoice) {
+            if (hasAnswered == true) {
+                return;
+            }
+
+            hasAnswered = true;
+
+            if (selectedChoice == quizQList[qIndex].ans) {
+                userScore++;
+                document.getElementById("feedbackText").textContent = "Correct answer!";
+            } else {
+                document.getElementById("feedbackText").textContent = "Incorrect. The correct answer is " + quizQList[qIndex].ans + ".";
+            }
+
+            document.getElementById("scoreBoard").textContent = "Score: " + userScore;
+            document.getElementById("btnNextQ").disabled = false;
+
+            if (qIndex == quizQList.length - 1) {
+                document.getElementById("btnNextQ").textContent = "Show Final Score";
+            }
+        }
+
+        function gotoNextQuestion() {
+            if (hasAnswered == false) {
+                return;
+            }
+
+            if (qIndex < quizQList.length - 1) {
+                qIndex++;
+                loadQuestion();
+            } else {
+                document.getElementById("qHeader").textContent = "Quiz completed!";
+                document.getElementById("answerButtonsBox").innerHTML = "";
+                document.getElementById("qCounter").textContent = "Finished";
+                document.getElementById("feedbackText").textContent = "Final score: " + userScore + " out of " + quizQList.length;
+                document.getElementById("btnNextQ").disabled = true;
+                document.getElementById("btnNextQ").textContent = "Next Question";
+            }
+        }
+
+        function restartQuizGame() {
+            qIndex = 0;
+            userScore = 0;
+            loadQuestion();
+        }
+
+        function searchFunction() {
+            let nameSchool = document.getElementById("schoolInput").value.trim().toUpperCase();
+            const schools = ["ARELLANO", "ATENEO", "FEU", "JRU", "RTU"];
+            
+            let schoolsSearch = schools.indexOf(nameSchool);
+          
+            if (schoolsSearch !== -1){
+                document.getElementById("result").innerHTML = "School Found!";
+            } else {    
+                document.getElementById("result").innerHTML = "School Not Found!";
+            }
+        }
+
+        function chkGrade() {
+            var raw = document.getElementById("gradeInputBox").value;
+            const numericGrade = Number(raw);
+
+            if (raw === "" || numericGrade < 0 || numericGrade > 100) {
+                document.getElementById("gradeFeedback").textContent = "Please enter a valid grade from 0 to 100.";
+            } else if (numericGrade >= 75) {
+                document.getElementById("gradeFeedback").textContent = "Congratulations! You Passed.";
+            } else {
+                document.getElementById("gradeFeedback").textContent = "Sorry! You Failed.";
+            }
+        }
+
+        let timeLeft = 60;
+        let changeNum = 60;
+        let timer;
+
+        function enterNum() {
+            changeNum = document.getElementById("changeNum").value;
+            timeLeft = changeNum;
+            document.getElementById("countdown").innerHTML = timeLeft;
+            clearInterval(timer);
+        }
+
+        function resetBtn() {
+            clearInterval(timer);
+            timeLeft = changeNum;
+            document.getElementById("countdown").innerHTML = timeLeft;
+            document.getElementById("timeMsg").innerHTML = "";
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            document.getElementById("timeMsg").innerHTML = "";
+
+            timer = setInterval(function() {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    document.getElementById("countdown").innerHTML = timeLeft;
+                } else {
+                    clearInterval(timer);
+                    document.getElementById("timeMsg").innerHTML = "Time's Up!";
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            clearInterval(timer);
+        }
+
+        function resumeTimer() {
+            if (timeLeft > 0) {
+                startTimer();
+            }
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
